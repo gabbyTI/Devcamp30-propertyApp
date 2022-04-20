@@ -16,5 +16,7 @@ class Property extends Model
         'state',
         'type',
         'bedrooms',
+        'price_per_anum',
+        'address'
     ];
 }
