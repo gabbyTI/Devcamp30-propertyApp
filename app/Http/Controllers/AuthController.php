@@ -106,4 +106,23 @@ class AuthController extends Controller
             'data' => ['token'=>$token]
         ]);
     }
+
+    public function updateUser(Request $request) {
+        $request->validate([
+            'name' => ['required','min:3'],
+            'email' => ['required']
+        ]);
+
+        $user = auth('sanctum')->user();
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Name updated successfully'
+        ]);
+    }
 }
