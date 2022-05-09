@@ -18,9 +18,12 @@ class PropertyController extends Controller
         $request->validate([
             'name' => ['required', 'min:5', 'unique:properties,name'],
             'state' => ['required'],
-            'type' => ['required', 'in:buy,rent,shortlet'],
-            'bedrooms' => ['required'],
-            'price_per_anum' => ['required', 'integer'],
+            'type' => ['required', 'in:flat,house,land'],
+            'payment_frequency' => ['required', 'in:daily,weekly,monthly,annually,outright'],
+            'category' => ['required', 'in:buy,rent,shortlet'],
+            'bedrooms' => ['required', 'integer'],
+            'toilets' => ['required', 'integer'],
+            'price' => ['required', 'integer'],
             'address' => ['required', 'string'],
             'image' => ['mimes:png,jpeg,gif,bmp', 'max:2048'],
 
@@ -45,7 +48,10 @@ class PropertyController extends Controller
             'bedrooms' => $request->bedrooms,
             'image' => $filename,
             'disk' => config('site.upload_disk'),
-            'price_per_anum' => $request->price_per_anum,
+            'price' => $request->price,
+            'payment_frequency' => $request->payment_frequency,
+            'category' => $request->category,
+            'toilets' => $request->toilets,
             'address' => $request->address,
         ]);
 
@@ -96,7 +102,11 @@ class PropertyController extends Controller
             'name' => ['required', 'min:5', 'unique:properties,name,' . $property->id],
             'state' => ['required'],
             'type' => ['required'],
-            'bedrooms' => ['required']
+            'payment_frequency' => ['required', 'in:daily,weekly,monthly,annually,outright'],
+            'category' => ['required', 'in:buy,rent,shortlet'],
+            'bedrooms' => ['required', 'integer'],
+            'toilets' => ['required', 'integer'],
+            'price' => ['required', 'integer'],
         ]);
 
         $this->authorize('update', $property);
@@ -106,6 +116,10 @@ class PropertyController extends Controller
         $property->state = $request->state;
         $property->type = $request->type;
         $property->bedrooms = $request->bedrooms;
+        $property->toilets = $request->toilets;
+        $property->category = $request->category;
+        $property->price = $request->price;
+        $property->payment_frequency = $request->payment_frequency;
         $property->save();
 
         // return succcess response
@@ -169,6 +183,16 @@ class PropertyController extends Controller
 
         if ($request->has('maxPrice')) {
             $query->where('price_per_anum', '<=', $request->maxPrice);
+        }
+
+        // category = 'buy', 'rent' or 'shortlet'
+        if ($request->has('category')) {
+            $query->where('category', '=', $request->category);
+        }
+
+        // type = 'flat', 'house' or 'land'
+        if ($request->has('type')) {
+            $query->where('type', '=', $request->type);
         }
 
         return response()->json([

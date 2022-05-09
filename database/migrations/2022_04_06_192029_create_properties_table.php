@@ -20,8 +20,10 @@ return new class extends Migration
             $table->string('slug');
             $table->string('state');
             // $table->string('type');
-            $table->enum('type', ['buy', 'rent', 'shortlet']);
-            $table->string('bedrooms');
+            $table->enum('category', ['buy', 'rent', 'shortlet']);
+            $table->enum('type', ['flat', 'house', 'land']);
+            $table->integer('bedrooms');
+            $table->integer('toilets');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::table('properties', function (Blueprint $table) {
             $table->string('address');
-            $table->integer('price_per_anum');
-
+            $table->integer('price');
+            $table->enum('payment_frequency', ['daily', 'weekly', 'monthly', 'annually', 'outright']);
         });
     }
 
@@ -28,7 +28,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->dropColumn(['address','price_per_anum']);
+            $table->dropColumn(['address', 'price', 'payment_frequency']);
         });
     }
 };
